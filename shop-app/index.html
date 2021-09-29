@@ -1,0 +1,119 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="Mejikuk - Masak apa hari ini?" />
+  <meta name="image" content="/images/logo.png">
+  <meta name="robots" content="noodp,noydir" />
+  <title>Mejikuk Shop</title>
+  <base href="/">
+
+  <link rel="shortcut icon" sizes="32x32" href="images/shop-icon-32.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@MejikukBuzz">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Mejikuk Shop">
+  <meta name="theme-color" content="#fff">
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+
+    body {
+      margin: 0;
+      font-family: 'Roboto', 'Noto', sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* styling for render while resources are loading */
+    shop-app[unresolved] {
+      display: block;
+      min-height: 101vh;
+      line-height: 68px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.3em;
+      color: #202020;
+      padding: 0 16px;
+      overflow: visible;
+    }
+
+  </style>
+
+</head>
+<body>
+
+  <shop-app unresolved>Mejikuk Shop</shop-app>
+
+  <script>
+    // HACK(keanulee): The Redux package assumes `process` exists - mock it here before
+    // the module is loaded.
+    window.process = {
+      env: {
+        NODE_ENV: 'production'
+      }
+    };
+  </script>
+
+  <script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+  <script>
+    // Subset of fetch polyfill for IE11 (supports GET requests for JSON only).
+    // Requires Promise to be defined.
+    window.fetch = window.fetch || function(url) {
+      return new Promise(function(resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        xhr.onload = function() {
+          resolve({
+            json: function() {
+              return new Promise(function(resolve, reject) {
+                try {
+                  resolve(JSON.parse(xhr.responseText));
+                } catch (e) {
+                  reject(e);
+                }
+              });
+            }
+          });
+        };
+        xhr.onerror = reject;
+        xhr.open('GET', url);
+        xhr.send();
+      });
+    };
+  </script>
+  <script type="module" src="src/components/shop-app.js"></script>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1WB64JK1HG"></script>
+  <script>
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.register("/pwabuilder-sw.js")
+    }
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-1WB64JK1HG');
+
+    // Redux assumes `process.env.NODE_ENV` exists in the ES module build.
+    // https://github.com/reactjs/redux/issues/2907
+    window.process = { env: { NODE_ENV: 'production' } };
+  </script>
+  <script type="module" src='./pwabuilder-sw-register.js'></script>
+
+</body>
+</html>

@@ -38,7 +38,9 @@ export default merge(baseConfig, {
     copy({
       targets: [
         { src: 'assets/*', dest: outputDir+'/assets' },
-        { src: 'manifest.json', dest: outputDir }
+        { src: 'manifest.json', dest: outputDir },
+        { src: 'google33c7f85e9eb7ad22.html', dest: outputDir },
+        { src: 'sitemap.xml', dest: outputDir },
       ],
       // set flatten to false to preserve folder structure
       flatten: true,
@@ -46,7 +48,7 @@ export default merge(baseConfig, {
     injectManifest({
       swSrc: 'pwabuilder-sw.js',
       swDest: outputDir +'/pwabuilder-sw.js',
-      globPatterns: ['index.html','manifest.json','src/**/*.{json,js}','assets/**/*.{json,ico,jpg,png}'],
+      globPatterns: ['index.html','manifest.json','src/**/*.{json,js}','assets/**/*.{ico,jpg,png}'],
       globDirectory: outputDir +'/',
       maximumFileSizeToCacheInBytes: 4 * 1024 * 1024
     })
